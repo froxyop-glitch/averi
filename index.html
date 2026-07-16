@@ -1,246 +1,637 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Averi Bhattacharya Portfolio</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.6;
-      background: #ffebf0; /* light pink background */
-      color: #333;
-      scroll-behavior: smooth;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Averi Bhattacharya — Systems · Security · Software</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#ffc0cb; /* PINK BACKGROUND */
+    --panel:#fff0f3;
+    --panel-2:#ffe4ea;
+    --line:#f5b6c2;
+    --text:#1a1a1a;
+    --muted:#6b4a52;
+    --accent:#d9467e;
+    --accent-dim:#b02e63;
+    --warn:#c67b00;
+    --radius:14px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  ::selection{background:var(--accent);color:#fff;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-0.01em;}
 
-    header {
-      background: #333;
-      color: #fff;
-      padding: 10px 0;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+  /* faint grid texture */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
+    background-size:42px 42px;
+    pointer-events:none;
+    z-index:0;
+  }
 
-    nav ul {
-      display: flex;
-      justify-content: center;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; width:100%; z-index:1000;
+    background:rgba(255,192,203,0.85);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:1160px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.1rem 2rem;
+  }
+  .logo{
+    font-size:0.95rem; text-decoration:none; color:var(--text);
+  }
+  .logo .prompt{color:var(--accent);}
+  .nav-links{
+    display:flex; gap:2rem; list-style:none; font-size:0.88rem;
+  }
+  .nav-links a{
+    text-decoration:none; color:var(--muted);
+    position:relative; padding-bottom:4px;
+    transition:color 0.25s;
+  }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0;
+    width:0; height:1px; background:var(--accent);
+    transition:width 0.25s;
+  }
+  .nav-links a:hover{color:var(--text);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-toggle{display:none; background:none; border:none; color:var(--text); font-size:1.4rem; cursor:pointer;}
 
-    nav ul li {
-      margin: 0 15px;
+  @media (max-width:820px){
+    .nav-links{
+      position:fixed; top:64px; right:0; left:0;
+      background:var(--panel);
+      flex-direction:column; gap:0;
+      border-bottom:1px solid var(--line);
+      max-height:0; overflow:hidden;
+      transition:max-height 0.35s ease;
     }
+    .nav-links.open{max-height:320px;}
+    .nav-links a{display:block; padding:1rem 2rem; border-bottom:1px solid var(--line);}
+    .nav-toggle{display:block;}
+  }
 
-    nav ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s ease;
-    }
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; align-items:center;
+    padding:120px 2rem 4rem;
+    z-index:1;
+  }
+  #netCanvas{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    z-index:0;
+    opacity:0.5;
+  }
+  .hero-inner{
+    position:relative; z-index:2;
+    max-width:1160px; margin:0 auto; width:100%;
+  }
+  .eyebrow{
+    color:var(--accent); font-size:0.8rem; letter-spacing:0.18em;
+    text-transform:uppercase; margin-bottom:1.2rem; display:inline-block;
+  }
+  .hero h1{
+    font-size:clamp(2.4rem, 6vw, 4.2rem);
+    font-weight:700; color:var(--text); max-width:14ch;
+  }
+  .hero-role{
+    margin-top:1rem; font-size:1.15rem; color:var(--muted); min-height:1.6em;
+  }
+  .hero-role .cursor{
+    display:inline-block; width:2px; height:1em; background:var(--accent);
+    margin-left:2px; vertical-align:-2px;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+  .hero p.lede{
+    margin-top:1.5rem; max-width:52ch; color:var(--muted); font-size:1rem;
+  }
+  .hero-ctas{margin-top:2.2rem; display:flex; gap:1rem; flex-wrap:wrap;}
+  .btn{
+    display:inline-flex; align-items:center; gap:0.5rem;
+    padding:0.85rem 1.6rem; border-radius:8px;
+    text-decoration:none; font-weight:600; font-size:0.92rem;
+    border:1px solid transparent; cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .btn-solid{background:var(--accent); color:#fff;}
+  .btn-solid:hover{background:#e45b93; transform:translateY(-2px);}
+  .btn-ghost{border-color:var(--line); color:var(--text); background:transparent;}
+  .btn-ghost:hover{border-color:var(--accent); color:var(--accent);}
 
-    nav ul li a:hover {
-      color: #ffebf0;
-    }
+  .scroll-cue{
+    position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
+    font-size:0.75rem; color:var(--muted); text-align:center; z-index:2;
+  }
+  .scroll-cue .line{
+    width:1px; height:34px; background:var(--line); margin:0.6rem auto 0;
+    position:relative; overflow:hidden;
+  }
+  .scroll-cue .line::after{
+    content:""; position:absolute; top:-100%; left:0; width:100%; height:100%;
+    background:var(--accent);
+    animation:drop 1.8s ease-in-out infinite;
+  }
+  @keyframes drop{ to{top:100%;} }
 
-    .section {
-      padding: 60px;
-      text-align: center;
-      animation: fadeIn 1.5s ease;
-    }
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    position:relative; z-index:1;
+    max-width:1160px; margin:0 auto;
+    padding:6rem 2rem;
+  }
+  .section-head{margin-bottom:3rem;}
+  .section-head .eyebrow{margin-bottom:0.6rem;}
+  .section-head h2{font-size:clamp(1.8rem,3.6vw,2.6rem);}
 
-    @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
-    }
+  .reveal{
+    opacity:0; transform:translateY(24px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in{opacity:1; transform:translateY(0);}
 
-    .services-grid, .projects-grid {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+  /* ---------- ABOUT (terminal card) ---------- */
+  .about-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:3rem; align-items:center;
+  }
+  .terminal{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.1);
+  }
+  .terminal-bar{
+    display:flex; align-items:center; gap:0.5rem;
+    padding:0.75rem 1rem; background:var(--panel-2); border-bottom:1px solid var(--line);
+  }
+  .terminal-bar span{width:11px; height:11px; border-radius:50%; display:inline-block;}
+  .dot-r{background:#ff5f57;} .dot-y{background:#febc2e;} .dot-g{background:#28c840;}
+  .terminal-title{margin-left:0.6rem; font-size:0.78rem; color:var(--muted);}
+  .terminal-body{padding:1.6rem; font-size:0.88rem;}
+  .terminal-body .line{margin-bottom:0.5rem; color:var(--muted);}
+  .terminal-body .prompt{color:var(--accent);}
+  .terminal-body .key{color:var(--warn);}
+  .terminal-body .out{color:var(--text); margin-left:0; margin-bottom:1rem; white-space:pre-wrap;}
 
-    .service, .project {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      width: 250px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease;
-    }
+  .about-copy p{color:var(--muted); margin-bottom:1.1rem;}
+  .about-copy strong{color:var(--text);}
 
-    .service:hover, .project:hover {
-      transform: translateY(-10px);
-    }
+  /* ---------- SKILLS ---------- */
+  .skills-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:1.4rem;
+  }
+  .skill-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:1.6rem;
+  }
+  .skill-top{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.8rem;}
+  .skill-top h3{font-size:1.02rem;}
+  .skill-top span{font-family:'JetBrains Mono',monospace; font-size:0.8rem; color:var(--accent);}
+  .bar-track{height:6px; background:var(--panel-2); border-radius:4px; overflow:hidden;}
+  .bar-fill{
+    height:100%; width:0%; background:linear-gradient(90deg,var(--accent-dim),var(--accent));
+    border-radius:4px; transition:width 1.4s cubic-bezier(.16,1,.3,1);
+  }
+  .skill-card p{margin-top:0.9rem; font-size:0.86rem; color:var(--muted);}
 
-    form {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
+  /* ---------- SERVICES ---------- */
+  .services-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:1.4rem;
+  }
+  .service-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:2rem; position:relative; overflow:hidden;
+    transition:border-color 0.3s, transform 0.3s;
+  }
+  .service-card:hover{border-color:var(--accent-dim); transform:translateY(-4px);}
+  .service-icon{
+    font-family:'JetBrains Mono',monospace; color:var(--accent);
+    font-size:0.85rem; margin-bottom:1rem; display:inline-block;
+    border:1px solid var(--line); padding:0.3rem 0.6rem; border-radius:6px;
+  }
+  .service-card h3{margin-bottom:0.7rem; font-size:1.15rem;}
+  .service-card p{color:var(--muted); font-size:0.92rem;}
 
-    form input, form textarea {
-      width: 100%;
-      padding: 12px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
-    }
+  /* ---------- CONTACT ---------- */
+  .contact-wrap{
+    display:grid; grid-template-columns:0.9fr 1.1fr; gap:3rem;
+  }
+  .contact-info h2{margin-bottom:1rem;}
+  .contact-info p{color:var(--muted); max-width:38ch; margin-bottom:1.6rem;}
+  .contact-detail{
+    font-family:'JetBrains Mono',monospace; font-size:0.88rem; color:var(--text);
+    margin-bottom:0.6rem; display:flex; gap:0.6rem;
+  }
+  .contact-detail .k{color:var(--muted);}
 
-    form button {
-      margin-top: 15px;
-      padding: 12px;
-      background: #333;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-      transition: background 0.3s ease;
-    }
+  .contact-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
+    padding:2rem;
+  }
+  .form-row{margin-bottom:1.3rem;}
+  .form-row label{
+    display:block; font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .form-row input, .form-row textarea{
+    width:100%; background:var(--panel-2); border:1px solid var(--line);
+    border-radius:8px; padding:0.8rem 1rem; color:var(--text);
+    font-family:'Inter',sans-serif; outline:none;
+    transition:border-color 0.25s, box-shadow 0.25s;
+  }
+  .form-row input:focus, .form-row textarea:focus{
+    border-color:var(--accent); box-shadow:0 0 0 3px rgba(217,70,126,0.15);
+  }
+  .form-row .error{
+    color:#c0392b; font-size:0.78rem; margin-top:0.4rem; display:none;
+  }
+  .form-row.invalid input, .form-row.invalid textarea{border-color:#c0392b;}
+  .form-row.invalid .error{display:block;}
+  .submit-btn{width:100%; justify-content:center; border:none;}
 
-    form button:hover {
-      background: #555;
-    }
+  /* ---------- TOAST ---------- */
+  .toast{
+    position:fixed; bottom:1.6rem; right:1.6rem; z-index:2000;
+    background:var(--panel); border:1px solid var(--accent-dim);
+    border-left:4px solid var(--accent);
+    padding:1rem 1.3rem; border-radius:10px; max-width:320px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.1);
+    transform:translateY(20px); opacity:0; pointer-events:none;
+    transition:transform 0.4s cubic-bezier(.16,1,.3,1), opacity 0.4s;
+  }
+  .toast.show{transform:translateY(0); opacity:1;}
+  .toast strong{display:block; font-size:0.9rem; margin-bottom:0.2rem;}
+  .toast span{font-size:0.82rem; color:var(--muted);}
 
-    footer {
-      background: #333;
-      color: #fff;
-      text-align: center;
-      padding: 15px 0;
-      margin-top: 20px;
-    }
+  /* ---------- FOOTER ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:2.5rem 2rem; text-align:center;
+    color:var(--muted); font-size:0.85rem;
+    font-family:'JetBrains Mono',monospace;
+  }
 
-    canvas {
-      max-width: 280px;
-      margin: auto;
-      display: block;
-    }
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  @media (max-width:820px){
+    .about-grid, .contact-wrap{grid-template-columns:1fr;}
+  }
+</style>
 </head>
 <body>
-  <!-- Navigation -->
-  <header>
-    <nav>
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#services">Services</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#testimonials">Testimonials</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="#resume">Resume</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <!-- Home Section -->
-  <section id="home" class="section">
-    <h1>Welcome to Averi Bhattacharya’s World-Class Portfolio</h1>
-    <p>Innovating with passion, delivering with precision, and inspiring through technology.</p>
-  </section>
+<header>
+  <nav>
+    <a href="#" class="logo mono"><span class="prompt">&gt;</span> averi.bhattacharya</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </nav>
+</header>
 
-  <!-- About Section -->
-  <section id="about" class="section">
-    <h2>About Me</h2>
-    <p>
-      I am Averi Bhattacharya, a visionary technologist blending creativity with engineering. 
-      My expertise spans web design, networking, cybersecurity, and advanced software development. 
-      I believe in building solutions that empower people and transform industries.
-    </p>
-  </section>
-
-  <!-- Skills Section -->
-  <section id="skills" class="section">
-    <h2>Skills</h2>
-    <canvas id="skillsChart"></canvas>
-  </section>
-
-  <!-- Services Section -->
-  <section id="services" class="section">
-    <h2>Services</h2>
-    <div class="services-grid">
-      <div class="service"><h3>Web Design</h3><p>Elegant, responsive, and user-focused websites.</p></div>
-      <div class="service"><h3>Networking</h3><p>Reliable solutions for seamless connectivity.</p></div>
-      <div class="service"><h3>Cybersecurity</h3><p>Advanced strategies to protect digital assets.</p></div>
-      <div class="service"><h3>Software Development</h3><p>Robust applications powered by Java, DBMS, and DSA.</p></div>
+<!-- HERO -->
+<section class="hero">
+  <canvas id="netCanvas"></canvas>
+  <div class="hero-inner">
+    <span class="eyebrow mono">Systems · Security · Software</span>
+    <h1>Averi Bhattacharya</h1>
+    <div class="hero-role mono">I build <span id="typedRole"></span><span class="cursor"></span></div>
+    <p class="lede">I design interfaces, harden networks, and ship software — treating security and craft as the same discipline, not separate concerns.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn btn-solid">Start a project</a>
+      <a href="#skills" class="btn btn-ghost">See capabilities</a>
     </div>
-  </section>
+  </div>
+  <div class="scroll-cue mono">scroll<div class="line"></div></div>
+</section>
 
-  <!-- Projects Section -->
-  <section id="projects" class="section">
-    <h2>Projects</h2>
-    <div class="projects-grid">
-      <div class="project"><h3>Portfolio Website</h3><p>A dynamic, responsive showcase of skills.</p></div>
-      <div class="project"><h3>Networking Lab</h3><p>Simulated enterprise-grade network setup.</p></div>
-      <div class="project"><h3>Cybersecurity Audit</h3><p>Comprehensive system vulnerability analysis.</p></div>
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid">
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <span class="dot-r"></span><span class="dot-y"></span><span class="dot-g"></span>
+        <span class="terminal-title mono">guest@averi — bash</span>
+      </div>
+      <div class="terminal-body mono">
+        <div class="line"><span class="prompt">$</span> whoami</div>
+        <div class="out">Averi Bhattacharya — technologist working across web design, computer networking, cybersecurity, and software engineering.</div>
+        <div class="line"><span class="prompt">$</span> cat mission.txt</div>
+        <div class="out">Deliver systems that are functional, defensible, and genuinely pleasant to use — in that order of priority, never traded off against each other.</div>
+        <div class="line"><span class="prompt">$</span> <span class="key">_</span></div>
+      </div>
     </div>
-  </section>
+    <div class="about-copy reveal">
+      <span class="eyebrow mono">About</span>
+      <h2>Where design discipline meets systems thinking</h2>
+      <p>My work sits at the intersection of three usually-separate worlds: how something <strong>looks and feels</strong>, how it <strong>moves data safely</strong>, and how it's <strong>built underneath</strong>. Most projects only get one of those right — I aim for all three.</p>
+      <p>That background in <strong>networking and cybersecurity</strong> shapes how I approach even purely visual work: nothing ships without asking what happens when it's misused, attacked, or scaled past what it was designed for.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="section">
-    <h2>Testimonials</h2>
-    <p>"Averi’s work is nothing short of exceptional. Truly world-class!" – Client A</p>
-    <p>"Innovative, reliable, and inspiring. Highly recommended." – Client B</p>
-  </section>
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-head reveal">
+    <span class="eyebrow mono">Capabilities</span>
+    <h2>Skills, measured honestly</h2>
+  </div>
+  <div class="skills-grid">
+    <div class="skill-card reveal" data-level="88">
+      <div class="skill-top"><h3>Web Design</h3><span class="skill-pct">88%</span></div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <p>Responsive, accessible interfaces built with intention, not templates.</p>
+    </div>
+    <div class="skill-card reveal" data-level="82">
+      <div class="skill-top"><h3>Computer Networking</h3><span class="skill-pct">82%</span></div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <p>Topology design, protocols, and reliable connectivity at scale.</p>
+    </div>
+    <div class="skill-card reveal" data-level="80">
+      <div class="skill-top"><h3>Cybersecurity</h3><span class="skill-pct">80%</span></div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <p>Threat modeling and defensive design baked in from the start.</p>
+    </div>
+    <div class="skill-card reveal" data-level="85">
+      <div class="skill-top"><h3>Java &amp; DBMS</h3><span class="skill-pct">85%</span></div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <p>Backend systems and schema design for data that has to stay correct.</p>
+    </div>
+    <div class="skill-card reveal" data-level="78">
+      <div class="skill-top"><h3>Data Structures &amp; Algorithms</h3><span class="skill-pct">78%</span></div>
+      <div class="bar-track"><div class="bar-fill"></div></div>
+      <p>Solving for the right complexity, not just a working answer.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="section">
-    <h2>Contact Me</h2>
-    <p>Let’s collaborate and create something extraordinary together.</p>
-    <form>
-      <input type="text" placeholder="Your Name" required>
-      <input type="email" placeholder="Your Email" required>
-      <textarea rows="6" placeholder="Your Message" required></textarea>
-      <button type="submit">Send Message</button>
-    </form>
-  </section>
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-head reveal">
+    <span class="eyebrow mono">Services</span>
+    <h2>How I can help</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <span class="service-icon mono">&lt;/&gt;</span>
+      <h3>Web Design</h3>
+      <p>Elegant, responsive sites and interfaces built for the people who actually use them.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon mono">net</span>
+      <h3>Computer Networking</h3>
+      <p>Network architecture and connectivity solutions that stay reliable under real load.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon mono">sec</span>
+      <h3>Cybersecurity</h3>
+      <p>Practical threat modeling and hardening, not just a checklist of controls.</p>
+    </div>
+    <div class="service-card reveal">
+      <span class="service-icon mono">db</span>
+      <h3>Software Development</h3>
+      <p>Robust applications backed by solid Java, database, and algorithmic foundations.</p>
+    </div>
+  </div>
+</section>
 
-  <!-- Resume Section -->
-  <section id="resume" class="section">
-    <h2>Resume</h2>
-    <p>Download my detailed resume to explore my journey and achievements.</p>
-    <a href="resume.pdf" download>
-      <button>Download Resume</button>
-    </a>
-  </section>
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <span class="eyebrow mono">Contact</span>
+      <h2>Let's build something that holds up</h2>
+      <p>Have a project in mind, or a system that needs a second look? Send a message and I'll reply personally.</p>
+      <div class="contact-detail"><span class="k">email</span> hello@averi.dev</div>
+      <div class="contact-detail"><span class="k">based</span> available for remote work</div>
+      <div class="contact-detail"><span class="k">status</span> open to new projects</div>
+    </div>
+    <div class="contact-card reveal">
+      <form id="contactForm" novalidate>
+        <div class="form-row" id="nameRow">
+          <label for="name">Your name</label>
+          <input type="text" id="name" placeholder="Averi Bhattacharya">
+          <div class="error">Enter your name so I know who's writing.</div>
+        </div>
+        <div class="form-row" id="emailRow">
+          <label for="email">Your email</label>
+          <input type="email" id="email" placeholder="you@example.com">
+          <div class="error">Enter a valid email so I can reply.</div>
+        </div>
+        <div class="form-row" id="messageRow">
+          <label for="message">Your message</label>
+          <textarea id="message" rows="5" placeholder="What are you building?"></textarea>
+          <div class="error">Add a few details about the project.</div>
+        </div>
+        <button type="submit" class="btn btn-solid submit-btn">Send message</button>
+      </form>
+    </div>
+  </div>
+</section>
 
-  <!-- Footer -->
-  <footer>
-    <p>©️ 2026 Averi Bhattacharya | Inspiring Technology, Empowering Ideas</p>
-  </footer>
+<footer>
+  © 2026 Averi Bhattacharya — built with intent, not templates.
+</footer>
 
-  <!-- Chart Script -->
-  <script>
-    const ctx = document.getElementById('skillsChart').getContext('2d');
-    const skillsChart = new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: ['Web Design', 'Networking', 'Cybersecurity', 'Java', 'Operating Systems', 'DSA', 'DBMS'],
-        datasets: [{
-          data: [15, 15, 15, 15, 10, 15, 15],
-          backgroundColor: ['#4CAF50', '#2196F3', '#FF5722', '#FFC107', '#9C27B0', '#00BCD4', '#8BC34A']
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' }
-        }
+<div class="toast mono" id="toast">
+  <strong>Message sent</strong>
+  <span>Thanks for reaching out — I'll reply soon.</span>
+</div>
+
+<script>
+/* ---------- MOBILE NAV ---------- */
+const navToggle = document.getElementById('navToggle');
+const navLinks = document.getElementById('navLinks');
+navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+/* ---------- TYPED ROLE ---------- */
+const roles = ['interfaces', 'networks', 'defenses', 'software'];
+const typedEl = document.getElementById('typedRole');
+let roleIdx = 0, charIdx = 0, deleting = false;
+
+function typeLoop(){
+  const current = roles[roleIdx];
+  if(!deleting){
+    charIdx++;
+    typedEl.textContent = current.slice(0, charIdx);
+    if(charIdx === current.length){
+      deleting = true;
+      setTimeout(typeLoop, 1400);
+      return;
+    }
+  } else {
+    charIdx--;
+    typedEl.textContent = current.slice(0, charIdx);
+    if(charIdx === 0){
+      deleting = false;
+      roleIdx = (roleIdx + 1) % roles.length;
+    }
+  }
+  setTimeout(typeLoop, deleting ? 45 : 85);
+}
+typeLoop();
+
+/* ---------- SCROLL REVEAL ---------- */
+const revealEls = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      entry.target.classList.add('in');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.15 });
+revealEls.forEach(el => revealObserver.observe(el));
+
+/* ---------- SKILL BARS ---------- */
+const skillCards = document.querySelectorAll('.skill-card');
+const skillObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.isIntersecting){
+      const card = entry.target;
+      const level = card.dataset.level;
+      card.querySelector('.bar-fill').style.width = level + '%';
+      skillObserver.unobserve(card);
+    }
+  });
+}, { threshold: 0.4 });
+skillCards.forEach(card => skillObserver.observe(card));
+
+/* ---------- NETWORK CANVAS (signature hero element) ---------- */
+const canvas = document.getElementById('netCanvas');
+const ctx = canvas.getContext('2d');
+let w, h, nodes = [];
+const hero = document.querySelector('.hero');
+const mouse = { x: null, y: null, radius: 140 };
+
+function resizeCanvas(){
+  w = canvas.width = hero.offsetWidth;
+  h = canvas.height = hero.offsetHeight;
+  const count = Math.min(70, Math.floor((w * h) / 18000));
+  nodes = Array.from({ length: count }, () => ({
+    x: Math.random() * w,
+    y: Math.random() * h,
+    vx: (Math.random() - 0.5) * 0.35,
+    vy: (Math.random() - 0.5) * 0.35,
+    r: Math.random() * 1.6 + 1
+  }));
+}
+
+hero.addEventListener('mousemove', (e) => {
+  const rect = hero.getBoundingClientRect();
+  mouse.x = e.clientX - rect.left;
+  mouse.y = e.clientY - rect.top;
+});
+hero.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+function step(){
+  ctx.clearRect(0, 0, w, h);
+
+  nodes.forEach(n => {
+    n.x += n.vx;
+    n.y += n.vy;
+    if(n.x < 0 || n.x > w) n.vx *= -1;
+    if(n.y < 0 || n.y > h) n.vy *= -1;
+
+    if(mouse.x !== null){
+      const dx = n.x - mouse.x, dy = n.y - mouse.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < mouse.radius){
+        const force = (mouse.radius - dist) / mouse.radius;
+        n.x += (dx / dist) * force * 1.6;
+        n.y += (dy / dist) * force * 1.6;
       }
-    });
-  </script>
+    }
+  });
+
+  for(let i = 0; i < nodes.length; i++){
+    for(let j = i + 1; j < nodes.length; j++){
+      const a = nodes[i], b = nodes[j];
+      const dx = a.x - b.x, dy = a.y - b.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 150){
+        ctx.strokeStyle = `rgba(217,70,126,${0.16 * (1 - dist / 150)})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(26,26,26,0.55)';
+    ctx.fill();
+  });
+
+  requestAnimationFrame(step);
+}
+resizeCanvas();
+step();
+window.addEventListener('resize', resizeCanvas);
+
+/* ---------- CONTACT FORM ---------- */
+const form = document.getElementById('contactForm');
+const toast = document.getElementById('toast');
+
+function validateRow(rowId, isValid){
+  const row = document.getElementById(rowId);
+  row.classList.toggle('invalid', !isValid);
+  return isValid;
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementBy I('message').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+  const nameValid = validateRow('nameRow', name.length > 0);
+  const emailValid = validateRow('emailRow', emailOk);
+  const messageValid = validateRow('messageRow', message.length > 4);
+
+  if(!(nameValid && emailValid && messageValid)) return;
+
+  toast.classList.add('show');
+  form.reset();
+  setTimeout(() => toast.classList.remove('show'), 4000);
+});
+
+['name','email','message'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    const rowId = id + 'Row';
+    document.getElementById(rowId).classList.remove('invalid');
+  });
+});
+</script>
 </body>
 </html>
